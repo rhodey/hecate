@@ -38,7 +38,7 @@ emulator:
 _emulator-linux:
   {{sudo}} docker compose up -d emulator-web pocket
   {{sudo}} docker exec -it emulator bash -c 'adb emu avd hostmicon'
-  sleep 10
+  sleep 20
 
 _emulator-macos:
   {{sudo}} docker compose up -d pocket
