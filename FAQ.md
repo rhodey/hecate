@@ -1,7 +1,7 @@
 # Hecate FAQ
 
 ## How to help?
-[This issue](https://github.com/rhodey/hecatee/issues/1) is a wishlist for PRs.
+[This issue](https://github.com/rhodey/hecate/issues/1) is a wishlist for PRs.
 
 ## What OSs are supported?
 Linux and MacBook Neo have been tested. Only linux is working 100%.
