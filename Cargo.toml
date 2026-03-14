@@ -1,0 +1,11 @@
+[package]
+name = "earshot-pipe"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+earshot = "1.0.0"
+
+[[bin]]
+name = "earshot-pipe"
+path = "src/earshot.rs"

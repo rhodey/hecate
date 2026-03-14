@@ -1,0 +1,17 @@
+appId: org.thoughtcrime.securesms
+---
+- extendedWaitUntil:
+    visible:
+      text: "^(Cancel|Chats)$"
+    timeout: 60000
+
+- runFlow:
+    when:
+      visible: "^Cancel$"
+    commands:
+      - tapOn:
+          text: "^Cancel$"
+
+- assertVisible: "^Chats$"
+- assertVisible: "^Calls$"
+- assertVisible: "^Stories$"

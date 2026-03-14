@@ -1,0 +1,25 @@
+FROM alpine:3.20 AS builder
+
+RUN apk add --no-cache git nodejs npm python3 make g++
+
+RUN apk add --no-cache wget unzip
+RUN wget https://github.com/rhodey/ws-scrcpy/archive/refs/tags/0.9.0-dev.zip
+RUN unzip 0.9.0-dev.zip -d /ws-scrcpy
+
+WORKDIR /ws-scrcpy/ws-scrcpy-0.9.0-dev/
+RUN npm install
+RUN npm run dist
+
+WORKDIR dist
+RUN npm install
+
+FROM alpine:3.20 AS runner
+
+RUN apk add --no-cache android-tools npm python3 make g++
+COPY --from=builder /ws-scrcpy/ws-scrcpy-0.9.0-dev/dist /root/ws-scrcpy
+
+WORKDIR /root/ws-scrcpy
+RUN npm rebuild
+
+COPY start-web.sh start-web.sh
+CMD ["./start-web.sh"]

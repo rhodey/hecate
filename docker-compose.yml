@@ -1,0 +1,117 @@
+networks:
+  hnet:
+    name: hnet
+    external: true
+
+services:
+  avatar:
+    container_name: avatar
+    build:
+      context: ./avatar/
+    networks:
+      hnet:
+    ports:
+      - 5173:5173
+
+  loop:
+    container_name: loop
+    build:
+      context: .
+    volumes:
+      - ./pulse/runtime:/app/pulse/runtime
+      - "${prompt:-./default.txt}:/app/prompt.txt"
+      - ./scripts:/app/scripts
+      - ./debug:/app/debug
+    env_file: .env
+    environment:
+      MAESTRO_CLI_NO_ANALYTICS: true
+      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
+      emulator: "${emulator:-emulator:5555}"
+      pocket: pocket:8001
+    networks:
+      hnet:
+    ports:
+      - 5174:5174
+
+  pulse:
+    container_name: pulse
+    build:
+      context: ./pulse/
+    restart: unless-stopped
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+    networks:
+      hnet:
+
+  emulator:
+    container_name: emulator
+    build:
+      context: ./emulator/
+    depends_on:
+      - pulse
+    devices:
+      - /dev/kvm
+      - "${camera:-/dev/null}:/dev/video0"
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+      - ./emulator/data:/data
+    environment:
+      DNS: one.one.one.one
+      RAM_SIZE: 4096
+      CAMERA: webcam0
+      QEMU_AUDIO_DRV: pa
+      QEMU_PA_SERVER: unix:/tmp/pulse/native
+      QEMU_PA_SOURCE: emulator_in.monitor
+      QEMU_PA_SINK: emulator_out
+    networks:
+      hnet:
+    ports:
+      - 5555:5555
+
+  emulator-web:
+    container_name: emulator-web
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    depends_on:
+      emulator:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      emulator: "${emulator:-emulator:5555}"
+    command: sh start-web.sh
+    networks:
+      hnet:
+    ports:
+      - 8000:8000
+
+  install-signal:
+    container_name: install-signal
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    volumes:
+      - ./emulator/signal.apk:/tmp/signal.apk
+    environment:
+      emulator: "${emulator:-emulator:5555}"
+    command: sh -c "adb connect $emulator && adb install /tmp/signal.apk"
+    networks:
+      hnet:
+
+  pocket:
+    container_name: pocket
+    build:
+      context: .
+      dockerfile: Dockerfile.pocket
+    volumes:
+      - pocket_tts_cache:/root/.cache/pocket_tts
+      - hf_cache:/root/.cache/huggingface
+    command: ["serve", "--host", "0.0.0.0", "--port", "8001"]
+    networks:
+      hnet:
+    ports:
+      - 8001:8001
+
+volumes:
+  pocket_tts_cache:
+  hf_cache:

@@ -1,0 +1,27 @@
+appId: org.thoughtcrime.securesms
+---
+- extendedWaitUntil:
+    visible:
+      text: "^(ANSWER|VIDEO|MARK READ)$"
+    timeout: 60000
+
+- runFlow:
+    when:
+      visible: "^MARK READ$"
+    commands:
+      - tapOn:
+          text: "^MARK READ$"
+
+- runFlow:
+    when:
+      visible: "^ANSWER$"
+    commands:
+      - tapOn:
+          text: "^ANSWER$"
+
+- runFlow:
+    when:
+      visible: "^VIDEO$"
+    commands:
+      - tapOn:
+          text: "^VIDEO$"

@@ -1,0 +1,22 @@
+FROM node:25-alpine3.22 as builder
+
+EXPOSE 5173
+
+WORKDIR /app
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
+
+COPY public public
+COPY src src
+COPY index.html .
+COPY vite.config.js .
+RUN npm run build
+
+FROM node:25-alpine3.22 as runner
+COPY --from=builder /app/dist /app
+
+WORKDIR /app
+RUN npm install -g serve
+
+CMD ["serve", "-l", "tcp://0.0.0.0:5173"]

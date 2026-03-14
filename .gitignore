@@ -1,0 +1,12 @@
+.env*
+*\.swp
+node_modules/
+avatar/dist/
+avatar/node_modules/
+pulse/runtime/
+emulator/data/
+emulator/signal.apk
+target/
+debug/
+prompt.txt
+notes.txt

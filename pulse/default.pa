@@ -1,0 +1,7 @@
+#!/usr/bin/pulseaudio -nF
+
+.fail
+load-module module-native-protocol-unix auth-anonymous=1 socket=/tmp/pulse/native
+
+load-module module-null-sink sink_name=emulator_out format=s16le rate=48000 channels=1
+load-module module-null-sink sink_name=emulator_in format=s16le rate=48000 channels=1

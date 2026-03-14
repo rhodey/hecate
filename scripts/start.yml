@@ -1,0 +1,4 @@
+appId: org.thoughtcrime.securesms
+---
+- launchApp:
+    clearState: false

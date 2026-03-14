@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# minimal runtime deps
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# install CPU-only torch
+RUN pip install --no-cache-dir \
+    torch --index-url https://download.pytorch.org/whl/cpu
+
+# install pocket-tts
+RUN pip install --no-cache-dir pocket-tts
+
+ENTRYPOINT ["pocket-tts"]

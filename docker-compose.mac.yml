@@ -1,0 +1,28 @@
+networks:
+  hnet:
+    name: hnet
+    external: true
+
+services:
+  emulator-web:
+    container_name: emulator-web
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    command: sh -c "emulator=host.docker.internal:5555 ./start-web.sh"
+    networks:
+      hnet:
+    ports:
+      - 8000:8000
+
+  install-signal:
+    container_name: install-signal
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    volumes:
+      - ./emulator/signal.apk:/tmp/signal.apk
+    command: sh -c "adb connect host.docker.internal:5555 && adb install /tmp/signal.apk"
+    networks:
+      hnet:
