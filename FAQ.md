@@ -9,6 +9,8 @@ Linux and MacBook Neo have been tested. Only linux is working 100%.
 ## Where to get 2nd phone number?
 I used [Telnyx.com](https://telnyx.com/) and there are other companies. You need a temporary webhook and to give them $5.
 
+You need features "SMS", "Voice", "Local calling".
+
 ## Where can I get more voices?
 See [Pocket TTS GitHub](https://github.com/kyutai-labs/pocket-tts) and [Pocket TTS demo](https://kyutai.org/blog/2026-01-13-pocket-tts).
 
