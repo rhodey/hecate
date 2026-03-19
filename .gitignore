@@ -8,6 +8,7 @@ emulator/data/
 emulator/signal.apk
 desktop/data
 desktop/qrcode.svg
+desktop/qrcode.mp4
 target/
 debug/
 prompt.txt
