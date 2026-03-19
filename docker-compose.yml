@@ -13,6 +13,17 @@ services:
     ports:
       - 5173:5173
 
+  desktop:
+    container_name: desktop
+    build:
+      context: ./desktop/
+    volumes:
+      - ./desktop/data:/home/hecate/.config/Signal
+    networks:
+      hnet:
+    ports:
+      - 9333:9333
+
   loop:
     container_name: loop
     build:

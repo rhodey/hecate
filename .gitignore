@@ -6,6 +6,7 @@ avatar/node_modules/
 pulse/runtime/
 emulator/data/
 emulator/signal.apk
+desktop/data
 target/
 debug/
 prompt.txt

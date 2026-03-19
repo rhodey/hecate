@@ -46,3 +46,5 @@ fi
 
 # Start the emulator with the appropriate ramdisk.img
 /opt/android-sdk/emulator/emulator -avd android -nojni -netfast -writable-system -no-boot-anim -skip-adb-auth -gpu swiftshader_indirect -no-snapshot -no-metrics $RAMDISK -camera-front $CAMERA -allow-host-audio -qemu -m $RAM_SIZE
+
+# emulator -avd <Your_AVD_Name> -camera-front "videofile,<path_to_video>"
