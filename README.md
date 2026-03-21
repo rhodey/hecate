@@ -29,7 +29,7 @@ just signal
 We now setup Signal Desktop because it uses less CPU and is easier to automate. Run `just desktop qrcode` then `docker logs -f qrcode` you should see "!! new code" and "!! same code". Return to [http://localhost:8081](http://localhost:8081/) and do Signal > Settings > Linked devices > Link a new device.
 
 ## Voice calls
-Signal Desktop should now be ready. To verify this do [chrome://inspect/#devices](chrome://inspect/#devices) > localhost:9222 > Signal > inspect fallback. Then send a text message from this Signal Desktop window to your main number so the new contact request can be accepted. And now you are ready.
+Signal Desktop should now be ready. To verify this do `chrome://inspect/#devices` > localhost:9222 > Signal > inspect fallback. Then send a text message from this Signal Desktop window to your main number so the new contact request can be accepted. And now you are ready.
 
 ```
 docker rm -f qrcode
