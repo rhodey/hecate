@@ -9,12 +9,10 @@ build:
   just _build-{{os()}}
 
 _build-linux:
-  grep -qF "emulator" .env || echo "emulator=emulator:5555" >> .env
   {{sudo}} docker compose build
 
 _build-macos:
-  grep -qF "emulator" .env || echo "emulator=emulator-5554" >> .env
-  {{sudo}} docker compose build pulse desktop qrcode avatar pocket
+  {{sudo}} docker compose build pulse desktop qrcode avatar loop pocket
   {{sudo}} docker compose -f docker-compose.mac.yml build emulator-web
 
 emulator:
@@ -23,12 +21,14 @@ emulator:
 
 _emulator-linux:
   mkdir -p emulator/data
+  grep -qF "emulator" .env || echo "emulator=emulator:5555" >> .env
   {{sudo}} docker compose up -d emulator emulator-web
 
 _emulator-macos:
   cp emulator/Toren1BD.posters $ANDROID_HOME/emulator/resources/Toren1BD.posters
   sed -i '' '$d' $ANDROID_HOME/emulator/resources/Toren1BD.posters
   echo "default $(pwd)/desktop/qrcode.jpg" >> $ANDROID_HOME/emulator/resources/Toren1BD.posters
+  grep -qF "emulator" .env || echo "emulator=emulator-5554" >> .env
   {{sudo}} docker compose -f docker-compose.mac.yml up -d emulator-web
   ./emulator/start-emulator-mac.sh
 
@@ -56,13 +56,10 @@ loop:
   just _loop-{{os()}}
 
 _loop-linux:
-  grep -qF "emulator" .env || echo "emulator=emulator:5555" >> .env
   {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
 
 _loop-macos:
-  grep -qF "emulator" .env || echo "emulator=emulator-5554" >> .env
-  grep -qF "pocket" .env || echo "pocket=localhost:8084" >> .env
-  node src/loop.js
+  {{sudo}} docker compose up loop
 
 camera:
   just _camera-{{os()}}
