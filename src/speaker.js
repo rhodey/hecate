@@ -16,12 +16,12 @@ export async function speak(text, voice='azelma') {
   const reader = res.body.getReader()
   const stdio = ['pipe', 'pipe', 'pipe']
   const input = `-fflags nobuffer -probesize 32 -analyzeduration 0 -f wav -i pipe:0`
-  const output = `-f pulse -device emulator_in -buffer_duration 50 -prebuf 0 pulse`
+  const output = `-f pulse -device signal_in -buffer_duration 50 -prebuf 0 pulse`
   const args = isLinux ?
     `-hide_banner -loglevel error ${input} ${output}`.split(` `) :
     `-t wav - -t coreaudio Loopback1`.split(` `)
   const cmd = isLinux ? 'ffmpeg' : 'sox'
-  const env = isLinux ? { PULSE_SERVER: `unix:/app/pulse/runtime/native` } : process.env
+  const env = isLinux ? { PULSE_SERVER: `unix:/tmp/pulse/native` } : process.env
   const child = spawn(cmd, args, { stdio, env })
   return new Promise(async (res, rej) => {
     let logs = ``

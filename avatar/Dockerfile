@@ -1,6 +1,6 @@
-FROM node:25-alpine3.22 as builder
+FROM node:25-alpine3.22 AS builder
 
-EXPOSE 5173
+EXPOSE 8082
 
 WORKDIR /app
 COPY package.json .
@@ -13,10 +13,10 @@ COPY index.html .
 COPY vite.config.js .
 RUN npm run build
 
-FROM node:25-alpine3.22 as runner
+FROM node:25-alpine3.22 AS runner
 COPY --from=builder /app/dist /app
 
 WORKDIR /app
 RUN npm install -g serve
 
-CMD ["serve", "-l", "tcp://0.0.0.0:5173"]
+CMD ["serve", "-l", "tcp://0.0.0.0:8082"]

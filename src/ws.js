@@ -7,7 +7,7 @@ const send = (ws, msg) => {
 }
 
 export function avatarWs() {
-  const server = new WebSocketServer({ port: 5174, clientTracking: true })
+  const server = new WebSocketServer({ port: 8083, clientTracking: true })
   let recent = null
 
   server.on('connection', (ws) => {

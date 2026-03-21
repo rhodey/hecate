@@ -6,6 +6,9 @@ avatar/node_modules/
 pulse/runtime/
 emulator/data/
 emulator/signal.apk
+desktop/data
+desktop/qrcode.svg
+desktop/qrcode.jpg
 target/
 debug/
 prompt.txt

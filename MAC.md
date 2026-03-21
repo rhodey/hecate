@@ -1,27 +1,13 @@
 # Hecate (Mac)
 I bought a MacBook Neo to try to make this work and got close:
 + Emulator has to run native instead of docker
-+ Loop.js / main has to run native instead of docker
-+ [Loopback audio app](https://rogueamoeba.com/loopback/) needs to be installed
++ Voice calls 100% working
++ Video calls not working
 
-Voice calls status:
-+ user speech is quiet (but STT is working)
-+ user speech is missing about 500ms from begin
-+ AI speech is choppy
+## Voice calls
+The Android emulator cannot run in docker because macOS does not support `kvm`.
 
-Video calls status:
-+ video works using OBS Studio
-+ when OBS Studio is running user speech is not received
-
-## Things I tried
-[Loopback](https://rogueamoeba.com/loopback/) is not open source. My first attempt was [BlackHole](https://github.com/ExistentialAudio/BlackHole) but the install only provides 1 audio device and we need 2. I tried to install the "BlackHole 2ch" driver and the "BlackHole 16ch" driver also and to use 1 for emulator in and the other for emulator out but the emulator does not want to work with BlackHole 16ch it wants 2 channel devices or 1 channel devices. I tried also [VB-Cable](https://vb-audio.com/Cable/) and this went nowhere.
-
-From what I have seen it should be attempted to succeed with Loopback and only after that maybe try and replace it. There is a Loopback free download and [they claim](https://rogueamoeba.com/support/knowledgebase/?showArticle=Misc-AboutAppTrials&product=Loopback) it operates exactly like the paid version except noise is added to the audio device after 20 minutes and to close and re-open the app after 20 minutes to avoid this. Stop the emulator and quit Loopback with each test cycle. Loopback should be re-opened before restart emulator.
-
-## Setup because we cant use 100% docker
-We cant use 100% docker because macOS does audio and `kvm` very differently than linux.
-
-Start by installing Android emulator
+So you need to install the Android emulator on macOS and this is not so bad:
 ```
 brew install openjdk@17
 echo 'export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"' >> ~/.zshrc
@@ -49,33 +35,16 @@ sdkmanager \
   "emulator" \
   "platforms;android-30" \
   "system-images;android-30;google_apis;arm64-v8a"
-```
 
-Now create an android virtual device
-```
 echo "no" | avdmanager create avd -n android30 -k "system-images;android-30;google_apis;arm64-v8a"
 ```
 
-Now install [Loopback](https://rogueamoeba.com/loopback/) and add 2 virtual devices and name them Loopback1 and Loopback2 and default settings
+All the docs in main README now apply to what you have.
 
-Now we need four more things from brew
-```
-brew install just switchaudio-osx ffmpeg sox
-```
+## Video calls
+MacOS docker support works by shipping a linux VM. This VM has many things available but `v4l2loopback` is not available. Video calls with macOS should work if you get `v4l2loopback` into a linux VM and run Hecate containers from there. The thing to do is to have OBS Studio send a UDP video stream into the VM and to have ffmpeg accept that stream and present it as a `v4l2loopback` device at `/dev/video0`.
 
-Now we need to query the audio drivers and look for "[N] Loopback2"
-```
-cp example.env .env
-ffmpeg -hide_banner -f avfoundation -list_devices true -i ""
-echo 'mic_idx=N' >> .env
-```
-You need also `node` and `cargo` installed and then finally we start the emulator
-```
-just build
-just emulator
-```
-
-All the docs in main README now apply to what you have
+If you get this working and with a happy setup path please share and I will update the docs.
 
 ## License
 mike@rhodey.org

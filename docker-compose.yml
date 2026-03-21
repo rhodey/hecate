@@ -4,65 +4,18 @@ networks:
     external: true
 
 services:
-  avatar:
-    container_name: avatar
-    build:
-      context: ./avatar/
-    networks:
-      hnet:
-    ports:
-      - 5173:5173
-
-  loop:
-    container_name: loop
-    build:
-      context: .
-    volumes:
-      - ./pulse/runtime:/app/pulse/runtime
-      - "${prompt:-./default.txt}:/app/prompt.txt"
-      - ./scripts:/app/scripts
-      - ./debug:/app/debug
-    env_file: .env
-    environment:
-      MAESTRO_CLI_NO_ANALYTICS: true
-      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
-      emulator: "${emulator:-emulator:5555}"
-      pocket: pocket:8001
-    networks:
-      hnet:
-    ports:
-      - 5174:5174
-
-  pulse:
-    container_name: pulse
-    build:
-      context: ./pulse/
-    restart: unless-stopped
-    volumes:
-      - ./pulse/runtime:/tmp/pulse
-    networks:
-      hnet:
-
   emulator:
     container_name: emulator
     build:
       context: ./emulator/
-    depends_on:
-      - pulse
     devices:
       - /dev/kvm
-      - "${camera:-/dev/null}:/dev/video0"
     volumes:
-      - ./pulse/runtime:/tmp/pulse
       - ./emulator/data:/data
+      - ./desktop/qrcode.jpg:/tmp/qrcode.jpg
     environment:
-      DNS: one.one.one.one
       RAM_SIZE: 4096
-      CAMERA: webcam0
-      QEMU_AUDIO_DRV: pa
-      QEMU_PA_SERVER: unix:/tmp/pulse/native
-      QEMU_PA_SOURCE: emulator_in.monitor
-      QEMU_PA_SINK: emulator_out
+      DNS: one.one.one.one
     networks:
       hnet:
     ports:
@@ -73,17 +26,17 @@ services:
     build:
       context: ./emulator/
       dockerfile: Dockerfile.web
+    restart: unless-stopped
     depends_on:
       emulator:
         condition: service_healthy
-    restart: unless-stopped
     environment:
       emulator: "${emulator:-emulator:5555}"
     command: sh start-web.sh
     networks:
       hnet:
     ports:
-      - 8000:8000
+      - 8081:8000
 
   install-signal:
     container_name: install-signal
@@ -98,6 +51,73 @@ services:
     networks:
       hnet:
 
+  pulse:
+    container_name: pulse
+    build:
+      context: ./pulse/
+    restart: unless-stopped
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+    networks:
+      hnet:
+
+  desktop:
+    container_name: desktop
+    platform: linux/amd64
+    build:
+      context: ./desktop/
+    depends_on:
+      - pulse
+    devices:
+      - "${camera:-/dev/null}:/dev/video0"
+    group_add:
+      - video
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+      - ./desktop/data:/home/hecate/.config/Signal
+    networks:
+      hnet:
+    ports:
+      - 9222:9222
+
+  qrcode:
+    container_name: qrcode
+    build:
+      context: .
+    restart: unless-stopped
+    depends_on:
+      - desktop
+    volumes:
+      - ./desktop:/app/desktop
+    command: sh -c "node src/qrcode.js"
+    networks:
+      hnet:
+
+  avatar:
+    container_name: avatar
+    build:
+      context: ./avatar/
+    networks:
+      hnet:
+    ports:
+      - 8082:8082
+
+  loop:
+    container_name: loop
+    build:
+      context: .
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+      - "${prompt:-./default.txt}:/app/prompt.txt"
+      - ./debug:/app/debug
+    env_file: .env
+    environment:
+      pocket: pocket:8084
+    networks:
+      hnet:
+    ports:
+      - 8083:8083
+
   pocket:
     container_name: pocket
     build:
@@ -106,11 +126,11 @@ services:
     volumes:
       - pocket_tts_cache:/root/.cache/pocket_tts
       - hf_cache:/root/.cache/huggingface
-    command: ["serve", "--host", "0.0.0.0", "--port", "8001"]
+    command: ["serve", "--host", "0.0.0.0", "--port", "8084"]
     networks:
       hnet:
     ports:
-      - 8001:8001
+      - 8084:8084
 
 volumes:
   pocket_tts_cache:

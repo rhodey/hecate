@@ -45,4 +45,4 @@ if ! pgrep -f "Xvfb ${DISPLAY}" >/dev/null 2>&1; then
 fi
 
 # Start the emulator with the appropriate ramdisk.img
-/opt/android-sdk/emulator/emulator -avd android -nojni -netfast -writable-system -no-boot-anim -skip-adb-auth -gpu swiftshader_indirect -no-snapshot -no-metrics $RAMDISK -camera-front $CAMERA -allow-host-audio -qemu -m $RAM_SIZE
+/opt/android-sdk/emulator/emulator -avd android -nojni -netfast -writable-system -no-boot-anim -skip-adb-auth -gpu swiftshader_indirect -no-snapshot -no-metrics $RAMDISK -camera-front emulated -camera-back virtualscene -qemu -m $RAM_SIZE
