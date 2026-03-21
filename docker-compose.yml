@@ -63,6 +63,7 @@ services:
 
   desktop:
     container_name: desktop
+    platform: linux/amd64
     build:
       context: ./desktop/
     depends_on:
