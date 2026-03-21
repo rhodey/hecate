@@ -12,7 +12,7 @@ _build-linux:
   {{sudo}} docker compose build
 
 _build-macos:
-  {{sudo}} docker compose build pulse desktop qrcode avatar loop pocket
+  {{sudo}} docker compose build pulse desktop qrcode loop pocket
   {{sudo}} docker compose -f docker-compose.mac.yml build emulator-web
 
 emulator:
@@ -59,7 +59,7 @@ _loop-linux:
   {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
 
 _loop-macos:
-  {{sudo}} docker compose up loop
+  {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
 
 camera:
   just _camera-{{os()}}
@@ -68,7 +68,7 @@ _camera-linux:
   echo "camera=$(ls -l /dev | grep video | tail -n1 | awk '{print "/dev/"$NF}')"
 
 _camera-macos:
-  echo "noop"
+  echo "not_supported"
 
 video:
   {{sudo}} docker compose up -d avatar
