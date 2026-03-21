@@ -55,11 +55,6 @@ async function main() {
   const context = browser.contexts()[0]
   if (!context) { throw new Error('No browser context') }
 
-  process.on('SIGTERM', async () => {
-    await browser.close()
-    process.exit(0)
-  })
-
   const pages = context.pages()
   const page = pages[0]
   if (!page) { throw new Error('No pages') }
