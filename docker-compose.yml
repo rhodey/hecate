@@ -67,6 +67,10 @@ services:
       context: ./desktop/
     depends_on:
       - pulse
+    devices:
+      - "${camera:-/dev/null}:/dev/video0"
+    group_add:
+      - video
     volumes:
       - ./pulse/runtime:/tmp/pulse
       - ./desktop/data:/home/hecate/.config/Signal
