@@ -14,21 +14,20 @@ _build-linux:
 
 _build-macos:
   grep -qF "emulator" .env || echo "emulator=emulator-5554" >> .env
-  grep -qF "pocket" .env || echo "pocket=localhost:8001" >> .env
-  npm install
-  cargo build --release
-  {{sudo}} docker compose build avatar pocket
+  {{sudo}} docker compose build pulse desktop qrcode avatar pocket
   {{sudo}} docker compose -f docker-compose.mac.yml build emulator-web
 
 emulator:
-  touch desktop/qrcode.jpg
   just _emulator-{{os()}}
 
 _emulator-linux:
   mkdir -p emulator/data
+  touch desktop/qrcode.jpg
   {{sudo}} docker compose up -d emulator emulator-web
 
 _emulator-macos:
+  touch /tmp/qrcode.jpg
+  cp emulator/Toren1BD.posters $ANDROID_HOME/emulator/resources/Toren1BD.posters
   {{sudo}} docker compose -f docker-compose.mac.yml up -d emulator-web
   ./emulator/start-emulator-mac.sh
 
