@@ -18,6 +18,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-socat TCP-LISTEN:9333,fork,bind=0.0.0.0 TCP:127.0.0.1:9222 &
+socat TCP-LISTEN:9222,fork,bind=0.0.0.0 TCP:127.0.0.1:9223 &
 
-exec signal-desktop --remote-debugging-port=9222 --no-sandbox
+exec signal-desktop --remote-debugging-port=9223 --no-sandbox

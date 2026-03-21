@@ -81,6 +81,8 @@ RUN chmod +x /root/first-boot.sh
 COPY start-emulator.sh /root/start-emulator.sh
 RUN chmod +x /root/start-emulator.sh
 
+COPY Toren1BD.posters /opt/android-sdk/emulator/resources/Toren1BD.posters
+
 # Expose necessary ports
 EXPOSE 5554 5555
 

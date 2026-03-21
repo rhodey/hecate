@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-EXPOSE 9333
+EXPOSE 9222
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:99

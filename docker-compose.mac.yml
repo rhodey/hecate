@@ -14,7 +14,7 @@ services:
     networks:
       hnet:
     ports:
-      - 8000:8000
+      - 8081:8000
 
   install-signal:
     container_name: install-signal

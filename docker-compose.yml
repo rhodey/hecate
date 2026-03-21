@@ -4,25 +4,88 @@ networks:
     external: true
 
 services:
-  avatar:
-    container_name: avatar
+  emulator:
+    container_name: emulator
     build:
-      context: ./avatar/
+      context: ./emulator/
+    devices:
+      - /dev/kvm
+    volumes:
+      - ./emulator/data:/data
+      - ./desktop/qrcode.jpg:/tmp/qrcode.jpg
+    environment:
+      RAM_SIZE: 4096
+      DNS: one.one.one.one
     networks:
       hnet:
     ports:
-      - 5173:5173
+      - 5555:5555
+
+  emulator-web:
+    container_name: emulator-web
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    restart: unless-stopped
+    depends_on:
+      emulator:
+        condition: service_healthy
+    environment:
+      emulator: "${emulator:-emulator:5555}"
+    command: sh start-web.sh
+    networks:
+      hnet:
+    ports:
+      - 8081:8000
+
+  install-signal:
+    container_name: install-signal
+    build:
+      context: ./emulator/
+      dockerfile: Dockerfile.web
+    volumes:
+      - ./emulator/signal.apk:/tmp/signal.apk
+    environment:
+      emulator: "${emulator:-emulator:5555}"
+    command: sh -c "adb connect $emulator && adb install /tmp/signal.apk"
+    networks:
+      hnet:
+
+  pulse:
+    container_name: pulse
+    build:
+      context: ./pulse/
+    restart: unless-stopped
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+    networks:
+      hnet:
 
   desktop:
     container_name: desktop
     build:
       context: ./desktop/
+    depends_on:
+      - pulse
     volumes:
+      - ./pulse/runtime:/app/pulse/runtime
       - ./desktop/data:/home/hecate/.config/Signal
     networks:
       hnet:
     ports:
-      - 9333:9333
+      - 9222:9222
+
+  qrcode:
+    container_name: qrcode
+    build:
+      context: .
+    depends_on:
+      - desktop
+    volumes:
+      - ./desktop:/app/desktop
+    command: sh -c "node src/qrcode.js"
+    networks:
+      hnet:
 
   loop:
     container_name: loop
@@ -38,76 +101,20 @@ services:
       MAESTRO_CLI_NO_ANALYTICS: true
       MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
       emulator: "${emulator:-emulator:5555}"
-      pocket: pocket:8001
+      pocket: pocket:8083
     networks:
       hnet:
     ports:
       - 5174:5174
 
-  pulse:
-    container_name: pulse
+  avatar:
+    container_name: avatar
     build:
-      context: ./pulse/
-    restart: unless-stopped
-    volumes:
-      - ./pulse/runtime:/tmp/pulse
-    networks:
-      hnet:
-
-  emulator:
-    container_name: emulator
-    build:
-      context: ./emulator/
-    depends_on:
-      - pulse
-    devices:
-      - /dev/kvm
-      - "${camera:-/dev/null}:/dev/video0"
-    volumes:
-      - ./pulse/runtime:/tmp/pulse
-      - ./emulator/data:/data
-    environment:
-      DNS: one.one.one.one
-      RAM_SIZE: 4096
-      CAMERA: webcam0
-      QEMU_AUDIO_DRV: pa
-      QEMU_PA_SERVER: unix:/tmp/pulse/native
-      QEMU_PA_SOURCE: emulator_in.monitor
-      QEMU_PA_SINK: emulator_out
+      context: ./avatar/
     networks:
       hnet:
     ports:
-      - 5555:5555
-
-  emulator-web:
-    container_name: emulator-web
-    build:
-      context: ./emulator/
-      dockerfile: Dockerfile.web
-    depends_on:
-      emulator:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      emulator: "${emulator:-emulator:5555}"
-    command: sh start-web.sh
-    networks:
-      hnet:
-    ports:
-      - 8000:8000
-
-  install-signal:
-    container_name: install-signal
-    build:
-      context: ./emulator/
-      dockerfile: Dockerfile.web
-    volumes:
-      - ./emulator/signal.apk:/tmp/signal.apk
-    environment:
-      emulator: "${emulator:-emulator:5555}"
-    command: sh -c "adb connect $emulator && adb install /tmp/signal.apk"
-    networks:
-      hnet:
+      - 8082:5173
 
   pocket:
     container_name: pocket
@@ -117,11 +124,11 @@ services:
     volumes:
       - pocket_tts_cache:/root/.cache/pocket_tts
       - hf_cache:/root/.cache/huggingface
-    command: ["serve", "--host", "0.0.0.0", "--port", "8001"]
+    command: ["serve", "--host", "0.0.0.0", "--port", "8083"]
     networks:
       hnet:
     ports:
-      - 8001:8001
+      - 8083:8083
 
 volumes:
   pocket_tts_cache:

@@ -12,6 +12,7 @@ Works great on Linux! Works poorly on Mac. [You can help](https://github.com/rho
 
 ## Install Signal
 You need Signal on your phone and also in an emulator:
+
 ```
 just build
 just emulator
@@ -19,17 +20,24 @@ just signal
 ```
 
 ## Register Signal
-+ [http://localhost:8000](http://localhost:8000/)
++ [http://localhost:8081](http://localhost:8081/)
 + "H264 Converter"
 + Swipe up + click Signal
 + Buy 2nd phone number + register
 
+## Signal Desktop
+We now setup Signal Desktop because it uses less CPU and is easier to automate. Run `just desktop qrcode` then `docker logs -f qrcode` you should see "!! new code" and "!! same code". Return to [http://localhost:8081](http://localhost:8081/) and do Signal > Settings > Linked devices > Link a new device.
+
 ## Voice calls
+Signal Desktop should now be ready. To verify this do [chrome://inspect/#devices](chrome://inspect/#devices) > localhost:9222 > Signal > inspect fallback. Then send a text message from this Signal Desktop window to your main number so the new contact request can be accepted. And now you are ready.
+
 ```
+docker rm -f qrcode
 cp example.env .env
 just loop
 ```
-+ Call phone number ✅
+
++ Call 2nd phone number ✅
 + Say "Whats your favorite Pirates Of The Caribbean movie?"
 
 ## Video calls
@@ -38,14 +46,14 @@ I got video calls working using only docker + chrome but CPU was too high. [OBS 
 ```
 just stop
 just video
-(OBS Studio > Sources > "+" > Browser > http://localhost:5173)
+(OBS Studio > Sources > "+" > Browser > http://localhost:8082)
 ("Start Virtual Camera")
 just camera >> .env
-just emulator
+just desktop
 just loop
 ```
 
-+ Video call phone number ✅
++ Video call 2nd phone number ✅
 + Say "Is this call secure?"
 
 ## Config (.env)
