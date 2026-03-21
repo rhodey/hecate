@@ -1,5 +1,7 @@
 FROM node:25-alpine3.22 AS builder
 
+EXPOSE 8083
+
 RUN apk add --no-cache cargo
 
 RUN mkdir -p /app/src

@@ -92,6 +92,15 @@ services:
     networks:
       hnet:
 
+  avatar:
+    container_name: avatar
+    build:
+      context: ./avatar/
+    networks:
+      hnet:
+    ports:
+      - 8082:8082
+
   loop:
     container_name: loop
     build:
@@ -102,20 +111,11 @@ services:
       - ./debug:/app/debug
     env_file: .env
     environment:
-      pocket: pocket:8083
+      pocket: pocket:8084
     networks:
       hnet:
     ports:
-      - 5174:5174
-
-  avatar:
-    container_name: avatar
-    build:
-      context: ./avatar/
-    networks:
-      hnet:
-    ports:
-      - 8082:5173
+      - 8083:8083
 
   pocket:
     container_name: pocket
@@ -125,11 +125,11 @@ services:
     volumes:
       - pocket_tts_cache:/root/.cache/pocket_tts
       - hf_cache:/root/.cache/huggingface
-    command: ["serve", "--host", "0.0.0.0", "--port", "8083"]
+    command: ["serve", "--host", "0.0.0.0", "--port", "8084"]
     networks:
       hnet:
     ports:
-      - 8083:8083
+      - 8084:8084
 
 volumes:
   pocket_tts_cache:

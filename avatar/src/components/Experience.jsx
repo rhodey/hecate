@@ -13,7 +13,7 @@ const AVATAR_OPTIONS = [
 
 const ANIMATION_OPTIONS = ["Greeting", "Thinking", "Idle"];
 
-const WEBSOCKET_URL = `ws://${window.location.hostname}:5174`;
+const WEBSOCKET_URL = `ws://${window.location.hostname}:8083`;
 const RECONNECT_INTERVAL_MS = 2000;
 const MODEL_LEFT_OFFSET = -0.45;
 

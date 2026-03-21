@@ -61,7 +61,7 @@ _loop-linux:
 
 _loop-macos:
   grep -qF "emulator" .env || echo "emulator=emulator-5554" >> .env
-  grep -qF "pocket" .env || echo "pocket=localhost:8001" >> .env
+  grep -qF "pocket" .env || echo "pocket=localhost:8084" >> .env
   node src/loop.js
 
 camera:

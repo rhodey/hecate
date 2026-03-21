@@ -1,7 +1,7 @@
 # Hecate VRM
 Forked from [wass08/r3f-vrm-final](https://github.com/wass08/r3f-vrm-final)
 
-[http://localhost:5173/](http://localhost:5173/)
+[http://localhost:8082/](http://localhost:8082/)
 
 ```
 npm install
