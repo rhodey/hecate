@@ -13,13 +13,13 @@ export class Mic {
   start() {
     const stdio = ['pipe', 'pipe', 'pipe']
     const input = isLinux ?
-      `-f pulse -sample_rate 48000 -channels 1 -fragment_size 960 -i emulator_out.monitor` :
+      `-f pulse -sample_rate 48000 -channels 1 -fragment_size 960 -i signal_out.monitor` :
       `-f avfoundation -i :${process.env.mic_idx} -map 0:a:0 -vn -sn -dn`
     const output = isLinux ?
       `-map 0:a:0 -vn -sn -dn -ac 1 -ar ${this.rate} -c:a pcm_s16le -f s16le pipe:1` :
       `-ac 1 -ar ${this.rate} -c:a pcm_s16le -f s16le pipe:1`
     const args = `-hide_banner -loglevel error ${input} ${output}`.split(` `)
-    const env = isLinux ? { PULSE_SERVER: `unix:/app/pulse/runtime/native` } : process.env
+    const env = isLinux ? { PULSE_SERVER: `unix:/tmp/pulse/native` } : process.env
     const child = spawn('ffmpeg', args, { stdio, env })
     if (!child.pid) { throw new Error('ffmpeg: no pid') }
     this.child = child

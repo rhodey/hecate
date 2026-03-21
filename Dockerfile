@@ -13,6 +13,7 @@ FROM node:25-alpine3.22 AS runner
 COPY --from=builder /app/target/release/earshot-pipe /app/target/release/earshot-pipe
 
 RUN apk add --no-cache imagemagick imagemagick-svg rsvg-convert imagemagick-jpeg
+RUN apk add --no-cache ffmpeg
 
 WORKDIR /app
 COPY package.json .

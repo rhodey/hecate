@@ -8,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY default.pa /etc/pulse/default.pa
-COPY start-pulseaudio.sh /usr/local/bin/start-pulseaudio.sh
-RUN chmod +x /usr/local/bin/start-pulseaudio.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["/usr/local/bin/start-pulseaudio.sh"]
+CMD ["/usr/local/bin/entrypoint.sh"]

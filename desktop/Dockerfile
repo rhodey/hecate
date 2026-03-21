@@ -6,6 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DISPLAY=:99
 ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/tmp/dbus-session
 ENV XDG_RUNTIME_DIR=/tmp/runtime-hecate
+ENV PULSE_SERVER=unix:/tmp/pulse/native
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -15,6 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus-x11 \
     xauth \
     tini \
+    socat \
+    pulseaudio-utils \
+    libasound2-plugins \
+    alsa-utils \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
@@ -25,11 +30,10 @@ RUN cat signal-desktop.sources | tee /etc/apt/sources.list.d/signal-desktop.sour
 RUN apt update && apt install -y signal-desktop
 
 RUN useradd -m -u 1000 hecate \
- && mkdir -p /home/hecate/.config /home/hecate/.cache /tmp/runtime-hecate \
- && chown -R hecate:hecate /home/hecate /tmp/runtime-hecate
+ && mkdir -p /home/hecate/.config /home/hecate/.cache /tmp/runtime-hecate /tmp/pulse \
+ && chown -R hecate:hecate /home/hecate /tmp/runtime-hecate /tmp/pulse
 
 RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
-RUN apt install -y socat
 
 USER hecate
 WORKDIR /home/hecate

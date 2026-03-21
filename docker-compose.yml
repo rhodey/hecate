@@ -68,7 +68,7 @@ services:
     depends_on:
       - pulse
     volumes:
-      - ./pulse/runtime:/app/pulse/runtime
+      - ./pulse/runtime:/tmp/pulse
       - ./desktop/data:/home/hecate/.config/Signal
     networks:
       hnet:
@@ -93,15 +93,11 @@ services:
     build:
       context: .
     volumes:
-      - ./pulse/runtime:/app/pulse/runtime
+      - ./pulse/runtime:/tmp/pulse
       - "${prompt:-./default.txt}:/app/prompt.txt"
-      - ./scripts:/app/scripts
       - ./debug:/app/debug
     env_file: .env
     environment:
-      MAESTRO_CLI_NO_ANALYTICS: true
-      MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
-      emulator: "${emulator:-emulator:5555}"
       pocket: pocket:8083
     networks:
       hnet:
