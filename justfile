@@ -53,12 +53,6 @@ loop:
   {{sudo}} docker rm -f emulator qrcode > /dev/null 2>&1
   {{sudo}} docker compose up -d pocket
   mkdir -p debug/
-  just _loop-{{os()}}
-
-_loop-linux:
-  {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
-
-_loop-macos:
   {{sudo}} env prompt="$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt)" docker compose up loop
 
 camera:
