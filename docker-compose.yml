@@ -79,6 +79,7 @@ services:
     container_name: qrcode
     build:
       context: .
+    restart: unless-stopped
     depends_on:
       - desktop
     volumes:

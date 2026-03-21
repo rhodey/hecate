@@ -41,7 +41,6 @@ async function getCode(page) {
 }
 
 async function main() {
-  await sleep(3_000)
   // override host header
   const { body } = await request('http://desktop:9222/json/version', { headers: { host: 'localhost:9223' }})
   const { webSocketDebuggerUrl } = await body.json()

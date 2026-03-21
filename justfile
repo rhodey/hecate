@@ -50,6 +50,7 @@ qrcode:
   {{sudo}} docker compose up -d qrcode
 
 loop:
+  {{sudo}} docker rm -f emulator qrcode > /dev/null 2>&1
   {{sudo}} docker compose up -d pocket
   mkdir -p debug/
   just _loop-{{os()}}
