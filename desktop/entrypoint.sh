@@ -20,11 +20,8 @@ cleanup() {
 trap cleanup EXIT
 
 echo "pulse = $PULSE_SERVER"
-sleep 5
+sleep 2
 pactl info
-pactl list short sinks
-pactl list short sources
-
 pactl set-default-sink signal_out
 pactl set-default-source signal_in.monitor
 
