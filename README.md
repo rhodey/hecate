@@ -1,7 +1,7 @@
 # Hecate
 AI Assistant you can video call.
 
-Works great on Linux! Works poorly on Mac. [You can help](https://github.com/rhodey/hecate/blob/main/MAC.md)!
+Works great on Linux! Voice only on Mac! [You can help!](https://github.com/rhodey/hecate/blob/main/MAC.md)
 
 + [Signal](https://signal.org/) private calling
 + [Tinfoil.sh](https://tinfoil.sh/) private inference
