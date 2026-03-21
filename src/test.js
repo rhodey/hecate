@@ -5,11 +5,9 @@ let conn = null
 
 async function connect() {
   if (conn) { return conn }
-  const { body } = await request('http://desktop:9222/json/version', { headers: { host: 'localhost:9223' }})
+  const { body } = await request('http://localhost:9222/json/version', { headers: { host: 'localhost:9223' }})
   const { webSocketDebuggerUrl } = await body.json()
   const wsUrl = webSocketDebuggerUrl
-    .replace('ws://localhost:', 'ws://desktop:')
-    .replace('ws://127.0.0.1:', 'ws://desktop:')
     .replace('9223', '9222')
   const browser = await chromium.connectOverCDP(wsUrl)
   const context = browser.contexts()[0]
@@ -77,3 +75,10 @@ export async function waitForCallEnd() {
     return
   }
 }
+
+waitForCall().then((type) => {
+  console.log('!! begin', type)
+  return waitForCallEnd()
+}).then(() => {
+  console.log('!! end')
+}).catch((err) => console.log(err))
