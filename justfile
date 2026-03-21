@@ -18,16 +18,17 @@ _build-macos:
   {{sudo}} docker compose -f docker-compose.mac.yml build emulator-web
 
 emulator:
+  touch desktop/qrcode.jpg
   just _emulator-{{os()}}
 
 _emulator-linux:
   mkdir -p emulator/data
-  touch desktop/qrcode.jpg
   {{sudo}} docker compose up -d emulator emulator-web
 
 _emulator-macos:
-  touch /tmp/qrcode.jpg
   cp emulator/Toren1BD.posters $ANDROID_HOME/emulator/resources/Toren1BD.posters
+  sed -i '' '$d' $ANDROID_HOME/emulator/resources/Toren1BD.posters
+  echo "default $(pwd)/desktop/qrcode.jpg" >> $ANDROID_HOME/emulator/resources/Toren1BD.posters
   {{sudo}} docker compose -f docker-compose.mac.yml up -d emulator-web
   ./emulator/start-emulator-mac.sh
 
