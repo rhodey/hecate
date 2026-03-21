@@ -59,7 +59,7 @@ _loop-linux:
   {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
 
 _loop-macos:
-  {{sudo}} prompt=$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt) docker compose up loop
+  {{sudo}} env prompt="$([ -f prompt.txt ] && echo ./prompt.txt || echo ./default.txt)" docker compose up loop
 
 camera:
   just _camera-{{os()}}
