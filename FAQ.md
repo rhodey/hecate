@@ -4,7 +4,7 @@
 [This issue](https://github.com/rhodey/hecate/issues/1) is a wishlist for PRs.
 
 ## What OSs are supported?
-Linux and MacBook Neo have been tested. Only linux is working 100%.
+Linux and MacBook Neo have been tested. Only linux is doing video calls 100%.
 
 ## Where to get 2nd phone number?
 I used [Telnyx.com](https://telnyx.com/) and there are other companies. You need a temporary webhook and to give them $5.
@@ -24,7 +24,7 @@ See [Pocket TTS GitHub](https://github.com/kyutai-labs/pocket-tts) and [Pocket T
 You can resize and move around the browser in OBS Studio.
 
 ## How much RAM is used?
-OS with 8GB RAM should do it. 16GB definitely.
+OS with 8GB RAM will work.
 
 ## How much HDD is used?
 About 12GB of Docker builds.
