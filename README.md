@@ -32,7 +32,7 @@ We now setup Signal Desktop because it uses less CPU and is easier to automate. 
 Signal Desktop should now be ready. To verify this do `chrome://inspect/#devices` > localhost:9222 > Signal > inspect fallback. Then send a text message from this Signal Desktop window to your main number so the new contact request can be accepted. And now you are ready.
 
 ```
-docker rm -f qrcode
+docker rm -f emulator qrcode
 cp example.env .env
 just loop
 ```
