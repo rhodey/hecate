@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { mkdirp } from 'mkdirp'
 import { Phrases } from './phrases.js'
 import { speak } from './speaker.js'
 import { avatarWs } from './ws.js'
@@ -7,7 +8,6 @@ import { TinfoilAI } from 'tinfoil'
 import dotenv from 'dotenv'
 
 dotenv.config({ quiet: true })
-
 const client = new TinfoilAI({ apiKey: process.env.tinfoil_key })
 
 function onError(err) {
@@ -16,13 +16,25 @@ function onError(err) {
 }
 
 async function loop() {
+  await mkdirp('./speech')
   const audioModel = process.env.stt_model
   const llmModel = process.env.llm_model
   const voice = process.env.voice
   const avatar = process.env.avatar + '.vrm'
-
   console.log('!! audio', audioModel, 'llm', llmModel, 'voice', voice, 'avatar', avatar)
-  const phrases = new Phrases('./debug')
+
+  const textFn = async (mp3) => {
+    console.log('!! transcribe')
+    let text = await client.audio.transcriptions.create({
+      model: audioModel, language: (process.env.stt_language ?? 'en'),
+      file: fs.createReadStream(mp3)
+    })
+    text = text.text.trim()
+    console.log('user', text)
+    return text
+  }
+
+  const phrases = new Phrases(textFn, './speech')
   const avSend = avatarWs()
   avSend({ avatar, animation: 'Idle' })
 
@@ -38,18 +50,12 @@ async function loop() {
     avSend({ avatar, animation: 'Idle' })
   })
 
-  phrases.on('next', async (mp3) => {
+  phrases.on('next', async (mp3, text) => {
     if (!in_call) { return }
     phrases.mute(1)
     console.log('!! next')
     avSend({ avatar, animation: 'Idle' })
 
-    console.log('!! transcribe')
-    let text = await client.audio.transcriptions.create({
-      model: audioModel, prompt: 'transcribe the audio',
-      file: fs.createReadStream(mp3)
-    })
-    text = text.text.trim()
     console.log('user', text)
     history.push({ role: 'user', content: text })
 
@@ -61,7 +67,7 @@ async function loop() {
 
     console.log('!! ai voice')
     avSend({ avatar, animation: 'Greeting', seek: 1000 })
-    // small help pronunciation
+    // fix pronunciation
     text = text.replaceAll(`Tinfoil.sh`, `Tinfoil`)
     await speak(text, voice)
 

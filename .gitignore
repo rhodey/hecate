@@ -10,6 +10,6 @@ desktop/data
 desktop/qrcode.svg
 desktop/qrcode.jpg
 target/
-debug/
+speech/
 prompt.txt
 notes.txt

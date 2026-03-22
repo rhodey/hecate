@@ -109,7 +109,6 @@ services:
     volumes:
       - ./pulse/runtime:/tmp/pulse
       - "${prompt:-./default.txt}:/app/prompt.txt"
-      - ./debug:/app/debug
     env_file: .env
     environment:
       pocket: pocket:8084
