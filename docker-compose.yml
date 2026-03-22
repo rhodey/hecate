@@ -6,6 +6,7 @@ networks:
 services:
   emulator:
     container_name: emulator
+    platform: linux/amd64
     build:
       context: ./emulator/
     devices:
