@@ -42,7 +42,7 @@ echo "no" | avdmanager create avd -n android30 -k "system-images;android-30;goog
 All the docs in main README now apply to what you have.
 
 ## Video calls
-MacOS docker support works by shipping a linux VM. This VM has many things available but `v4l2loopback` is not available. Video calls with macOS should work if you get `v4l2loopback` into a linux VM and run Hecate containers from there. The thing to do is to have OBS Studio send a UDP video stream into the VM and to have ffmpeg accept that stream and present it as a `v4l2loopback` device at `/dev/video0`.
+MacOS docker support works by shipping a linux VM. This VM has many things available but `v4l2loopback` is not available. Video calls with macOS should work if you get `v4l2loopback` into a linux VM and run Hecate containers from there. The thing to do is to have OBS Studio send a UDP video stream into the VM and to have ffmpeg accept that stream and present it as a `v4l2loopback` device at `/dev/video0` where Signal Desktop will find it.
 
 If you get this working and with a happy setup path please share and I will update the docs.
 
