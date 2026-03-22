@@ -1,7 +1,5 @@
 import { spawn } from 'child_process'
 
-const isLinux = process.platform !== 'darwin'
-
 function writeNice(child, buf) {
   const ok = child.stdin.write(buf)
   if (ok) { return Promise.resolve(1) }
@@ -17,12 +15,9 @@ export async function speak(text, voice='azelma') {
   const stdio = ['pipe', 'pipe', 'pipe']
   const input = `-fflags nobuffer -probesize 32 -analyzeduration 0 -f wav -i pipe:0`
   const output = `-f pulse -device signal_in -buffer_duration 50 -prebuf 0 pulse`
-  const args = isLinux ?
-    `-hide_banner -loglevel error ${input} ${output}`.split(` `) :
-    `-t wav - -t coreaudio Loopback1`.split(` `)
-  const cmd = isLinux ? 'ffmpeg' : 'sox'
-  const env = isLinux ? { PULSE_SERVER: `unix:/tmp/pulse/native` } : process.env
-  const child = spawn(cmd, args, { stdio, env })
+  const args = `-hide_banner -loglevel error ${input} ${output}`.split(` `)
+  const env = { PULSE_SERVER: `unix:/tmp/pulse/native` }
+  const child = spawn('ffmpeg', args, { stdio, env })
   return new Promise(async (res, rej) => {
     let logs = ``
     child.stderr.setEncoding('utf8')
