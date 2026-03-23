@@ -65,7 +65,7 @@ just loop
 + also [FAQ](https://github.com/rhodey/hecate/blob/main/FAQ.md)
 
 ## Security
-Open Signal on your phone and `chrome://inspect/#devices` for Desktop. Your message thread has a ["safety number"](https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed) which you can review. If the safety number changes you will be warned on your phone before the next call is allowed. Signal Desktop is answering all calls without a filter and this is a priority to improve but the AI has no memory between calls so if someone finds your 2nd phone number its not critical.
+Open Signal on your phone and `chrome://inspect/#devices` for Desktop. Your message thread has a ["safety number"](https://support.signal.org/hc/en-us/articles/360007060632-What-is-a-safety-number-and-why-do-I-see-that-it-changed) which you can review. If the safety number changes you will be warned on your phone before the next call is allowed. Signal Desktop is answering all calls without a filter and this is a priority to improve but the AI has no memory between calls so if someone finds your 2nd phone number its not critical. Signal Desktop is in a container and not interfering if also installed on your OS.
 
 ## VR Credits
 + avatar1 - 水銀メイド
