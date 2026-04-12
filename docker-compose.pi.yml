@@ -1,0 +1,102 @@
+networks:
+  hnet:
+    name: hnet
+    external: true
+
+# Raspberry Pi override. Use instead of docker-compose.yml:
+#
+#   docker compose -f docker-compose.pi.yml up
+#
+# Signal Android runs via Waydroid on the host (not in a container).
+# Install Waydroid via pi-apps: https://github.com/Botspot/pi-apps
+# Then link Signal Desktop to it as you would on a normal desktop setup.
+#
+# Signal Desktop requires a community arm64 build. Build the desktop image with:
+#   docker build --build-arg SIGNAL_DESKTOP_DEB=<url> ./desktop/
+# See: https://github.com/signalflatpak/signal for arm64 .deb releases.
+
+services:
+  pulse:
+    container_name: pulse
+    build:
+      context: ./pulse/
+    restart: unless-stopped
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+    networks:
+      hnet:
+
+  desktop:
+    container_name: desktop
+    build:
+      context: ./desktop/
+      args:
+        SIGNAL_DESKTOP_DEB: "${SIGNAL_DESKTOP_DEB:?Set SIGNAL_DESKTOP_DEB to the arm64 .deb URL}"
+    depends_on:
+      - pulse
+    devices:
+      - "${camera:-/dev/null}:/dev/video0"
+    group_add:
+      - video
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+      - ./desktop/data:/home/hecate/.config/Signal
+    networks:
+      hnet:
+    ports:
+      - 9222:9222
+
+  qrcode:
+    container_name: qrcode
+    build:
+      context: .
+    restart: unless-stopped
+    depends_on:
+      - desktop
+    volumes:
+      - ./desktop:/app/desktop
+    command: sh -c "node src/qrcode.js"
+    networks:
+      hnet:
+
+  avatar:
+    container_name: avatar
+    build:
+      context: ./avatar/
+    networks:
+      hnet:
+    ports:
+      - 8082:8082
+
+  loop:
+    container_name: loop
+    build:
+      context: .
+    volumes:
+      - ./pulse/runtime:/tmp/pulse
+      - "${prompt:-./default.txt}:/app/prompt.txt"
+    env_file: .env
+    environment:
+      pocket: pocket:8084
+    networks:
+      hnet:
+    ports:
+      - 8083:8083
+
+  pocket:
+    container_name: pocket
+    build:
+      context: .
+      dockerfile: Dockerfile.pocket
+    volumes:
+      - pocket_tts_cache:/root/.cache/pocket_tts
+      - hf_cache:/root/.cache/huggingface
+    command: ["serve", "--host", "0.0.0.0", "--port", "8084"]
+    networks:
+      hnet:
+    ports:
+      - 8084:8084
+
+volumes:
+  pocket_tts_cache:
+  hf_cache:
