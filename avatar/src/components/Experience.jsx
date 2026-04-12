@@ -5,11 +5,7 @@ import { useControls } from "leva";
 import { useEffect, useRef, useState } from "react";
 import { VRMAvatar } from "./VRMAvatar";
 
-const AVATAR_OPTIONS = [
-  "avatar1.vrm",
-  "avatar2.vrm",
-  "avatar3.vrm",
-];
+const DEFAULT_AVATAR = "avatar1.vrm";
 
 const ANIMATION_OPTIONS = ["Greeting", "Thinking", "Idle"];
 
@@ -35,8 +31,7 @@ export const Experience = () => {
 
   const [{ avatar, animation }, setVrmSettings] = useControls(() => ({
     avatar: {
-      value: AVATAR_OPTIONS[0],
-      options: AVATAR_OPTIONS,
+      value: DEFAULT_AVATAR,
     },
     animation: {
       value: "Idle",
@@ -64,7 +59,7 @@ export const Experience = () => {
     if (
       typeof payload.avatar === "string" &&
       payload.avatar !== currentAvatarRef.current &&
-      AVATAR_OPTIONS.includes(payload.avatar)
+      /^[a-zA-Z0-9_.-]+\.vrm$/.test(payload.avatar)
     ) {
       updates.avatar = payload.avatar;
     }
